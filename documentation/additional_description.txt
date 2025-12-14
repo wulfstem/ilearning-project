@@ -1,0 +1,10 @@
+Please, pay attention to the last point (extendability).
+
+Additionally add the following external "integrations":
+Add weather data. Then implement an external job that periodically gets and copies enriched weather
+data into a separate time-series database (you may choose any). Build a dashboard to analyze the data
+(e.g. Grafana).
+
+Use Great Expectations to define data quality checks (like distributions, nulls, etc.) on data and make
+a user-friendly trigger – sending a message to the bot in telegram or discord – to produce a report on
+quality of data and failures.
