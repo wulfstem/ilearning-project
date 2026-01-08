@@ -1,0 +1,105 @@
+{
+    "name": "Ingest_NYC_Taxi_child",
+    "objectId": "0dfbe2dd-41c8-4d33-a136-dfdf678554e0",
+    "properties": {
+        "activities": [
+            {
+                "name": "ForMonths",
+                "type": "ForEach",
+                "dependsOn": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@createArray('01','02','03','04','05','06','07','08','09','10','11','12')",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "CopyMonth",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "source": {
+                                    "type": "BinarySource",
+                                    "storeSettings": {
+                                        "type": "HttpReadSettings",
+                                        "requestMethod": "GET"
+                                    },
+                                    "formatSettings": {
+                                        "type": "BinaryReadSettings"
+                                    },
+                                    "datasetSettings": {
+                                        "annotations": [],
+                                        "type": "Binary",
+                                        "typeProperties": {
+                                            "location": {
+                                                "type": "HttpServerLocation",
+                                                "relativeUrl": {
+                                                    "value": "@concat(\n  'trip-data/yellow_tripdata_',\n  pipeline().parameters.year,\n  '-',\n  item(),\n  '.parquet'\n)",
+                                                    "type": "Expression"
+                                                }
+                                            }
+                                        },
+                                        "externalReferences": {
+                                            "connection": "e2814ab9-c2d4-4661-ac83-f67ee4a404f4"
+                                        }
+                                    }
+                                },
+                                "sink": {
+                                    "type": "BinarySink",
+                                    "storeSettings": {
+                                        "type": "LakehouseWriteSettings",
+                                        "copyBehavior": "PreserveHierarchy"
+                                    },
+                                    "datasetSettings": {
+                                        "annotations": [],
+                                        "linkedService": {
+                                            "name": "MobilityLakehouse",
+                                            "properties": {
+                                                "annotations": [],
+                                                "type": "Lakehouse",
+                                                "typeProperties": {
+                                                    "workspaceId": "1c5c8b52-cac8-4458-8854-e182b18bb906",
+                                                    "artifactId": "c0717884-df49-4052-a6f0-7b820d4d2773",
+                                                    "rootFolder": "Files"
+                                                }
+                                            }
+                                        },
+                                        "type": "Binary",
+                                        "typeProperties": {
+                                            "location": {
+                                                "type": "LakehouseLocation",
+                                                "fileName": {
+                                                    "value": "@concat(\n    'yellow_tripdata_',\n    pipeline().parameters.year,\n    '-',\n    item(),\n    '.parquet'\n)",
+                                                    "type": "Expression"
+                                                },
+                                                "folderPath": {
+                                                    "value": "@concat(\n    'bronze/nyc_taxi/year=',\n    pipeline().parameters.year,\n    '/month=',\n    item()\n)",
+                                                    "type": "Expression"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "enableStaging": false
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "year": {
+                "type": "string"
+            }
+        },
+        "lastModifiedByObjectId": "a80385f5-5df1-4b83-89a6-ecf1e5638b5f",
+        "lastPublishTime": "2026-01-05T10:12:39Z"
+    }
+}

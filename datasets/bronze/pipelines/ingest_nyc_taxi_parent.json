@@ -1,0 +1,51 @@
+{
+    "name": "Ingest_NYC_Taxi_parent",
+    "objectId": "aae6c2ef-5049-4be3-b91b-0ba25e3c1cdd",
+    "properties": {
+        "activities": [
+            {
+                "name": "ForEachYear",
+                "type": "ForEach",
+                "dependsOn": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@createArray('2019', '2020', '2021', '2022', '2023', '2024')",
+                        "type": "Expression"
+                    },
+                    "isSequential": true,
+                    "activities": [
+                        {
+                            "name": "ExecuteMonthlyDownload",
+                            "type": "InvokePipeline",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "typeProperties": {
+                                "waitOnCompletion": true,
+                                "operationType": "InvokeFabricPipeline",
+                                "pipelineId": "0dfbe2dd-41c8-4d33-a136-dfdf678554e0",
+                                "workspaceId": "1c5c8b52-cac8-4458-8854-e182b18bb906",
+                                "parameters": {
+                                    "year": {
+                                        "value": "@item()",
+                                        "type": "Expression"
+                                    }
+                                }
+                            },
+                            "externalReferences": {
+                                "connection": "1b7cd25a-704e-450b-afa0-d90839e56c8d"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "lastModifiedByObjectId": "a80385f5-5df1-4b83-89a6-ecf1e5638b5f",
+        "lastPublishTime": "2026-01-05T10:12:45Z"
+    }
+}
